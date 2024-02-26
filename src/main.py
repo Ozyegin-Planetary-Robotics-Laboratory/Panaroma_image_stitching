@@ -5,6 +5,27 @@ import pyzed.sl as sl
 from PIL import Image
 
 
+def placeSymbol(image, symbol):
+    # Define the coordinates where you want to place the symbol
+    x, y = 760, 50
+
+    # Define the font settings
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 4
+    font_thickness = 7
+    font_color = (0, 255, 0)  # Green color
+
+    # Get the size of the symbol text
+    text_size = cv2.getTextSize(symbol, font, font_scale, font_thickness)[0]
+
+    # Calculate the position to place the text so that it's centered at (x, y)
+    text_x = x - text_size[0] // 2
+    text_y = y + text_size[1] // 2
+
+    # Place the symbol on the image
+    cv2.putText(image, symbol, (text_x, text_y), font, font_scale, font_color, font_thickness)
+
+
 def rgba2rgb(rgba, background=(255, 255, 255)):
     row, col, ch = rgba.shape
 
@@ -108,8 +129,27 @@ def main():
                                                                                  timestamp.get_milliseconds()))
             i = i + 1
             print(magnetometerdata)
+
+    # Magnetometerdata array and images array matched with index.
+    # After finding the "northest" angle,N symbol placed to the image with the most north angle
+    placeSymbol(images_all[findNorthestPicturesIndex(magnetometerdata)], "N")
+
     # Close the camera
     zed.close()
+
+
+def findNorthestPicturesIndex(angles):
+    # Normalize angles to be in the range [0, 180]
+    normalized_angles = [(angle % 360) if angle <= 180 else (angle % 360 - 360) for angle in angles]
+
+    # Find the maximum normalized angle
+    max_angle = max(normalized_angles)
+
+    # Convert the maximum normalized angle back to the original range [0, 360]
+    northest_angle = (max_angle + 360) % 360
+
+    # Return the northest picture's index
+    return normalized_angles.index(max_angle)
 
 
 def stitch():

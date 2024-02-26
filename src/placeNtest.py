@@ -1,20 +1,15 @@
-
-
 import cv2
 
 
-def placeDirection(image):
+def placeSymbol(image, symbol):
     # Define the coordinates where you want to place the symbol
     x, y = 760, 50
-
-    # Define the symbol text (N or S)
-    symbol = "N"
 
     # Define the font settings
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 4
     font_thickness = 7
-    font_color = (0, 255, 0)  # White color
+    font_color = (0, 255, 0)  # Green color
 
     # Get the size of the symbol text
     text_size = cv2.getTextSize(symbol, font, font_scale, font_thickness)[0]
@@ -29,7 +24,7 @@ def placeDirection(image):
 
 def main():
     image = cv2.imread('C:/Users/taalp/Documents/GitHub/Panaroma_image_stitching/unstitchedImages/1.jpeg')
-    placeDirection(image)
+    placeSymbol(image, "N")
     # Display the image
     cv2.imshow('Image with symbol', image)
     cv2.waitKey(0)
